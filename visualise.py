@@ -29,11 +29,11 @@ class MapEnv:
         self.width = width
         self.height = height
         self.envXCoord, self.envYCoord = [], []
-        self.left_obs_anchor  = [10, 10]
-        self.right_obs_anchor  = [70, 10]
+        self.left_obs_anchor  = [5, 5]
+        self.right_obs_anchor  = [70, 5]
         self.center_obs_anchor = [40, 50]
         self.obs_width = 25
-        self.obs_height = 15
+        self.obs_height = 10
         self.obs_delta = 20
 
     def buildEnv(self):

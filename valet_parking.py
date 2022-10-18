@@ -21,7 +21,7 @@ def main():
 
     plt.plot(map.envXCoord, map.envYCoord, "sk")
     plt.plot(ENV_WIDTH, ENV_HEIGHT, linewidth=1.5, color='r', zorder=0)
-
+    plt.axis('equal')
 
     plt.title("Valet Parking")
     plt.pause(0.001)

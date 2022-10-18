@@ -29,6 +29,12 @@ class MapEnv:
         self.width = width
         self.height = height
         self.envXCoord, self.envYCoord = [], []
+        self.left_obs_anchor  = [10, 10]
+        self.right_obs_anchor  = [70, 10]
+        self.center_obs_anchor = [40, 50]
+        self.obs_width = 25
+        self.obs_height = 15
+        self.obs_delta = 20
 
     def buildEnv(self):
         
@@ -45,17 +51,32 @@ class MapEnv:
                     self.envXCoord.append(0)
                     self.envYCoord.append(row)
 
+                #Plotting along X-Opposite border
                 if row == (self.height-1):
                     self.envXCoord.append(col)
                     self.envYCoord.append(self.height-1)
 
+                #Plotting along Y-Opposite border
                 if col == (self.width-1):
                     self.envXCoord.append(self.width-1)
                     self.envYCoord.append(row)
 
+                #Plotting left obstacle
+                if col >= self.left_obs_anchor[0] and col <= (self.left_obs_anchor[0] + self.obs_width):
+                    if row >= self.left_obs_anchor[1] and row <= (self.left_obs_anchor[1] + self.obs_height):
+                        self.envXCoord.append(col)
+                        self.envYCoord.append(row)
 
-
+                #Plotting right obstacle
+                if col >= self.right_obs_anchor[0] and col <= (self.right_obs_anchor[0] + self.obs_width):
+                    if row >= self.right_obs_anchor[1] and row <= (self.right_obs_anchor[1] + self.obs_height):
+                        self.envXCoord.append(col)
+                        self.envYCoord.append(row)
     
-    
+                #Plotting right obstacle
+                if col >= self.center_obs_anchor[0] and col <= (self.center_obs_anchor[0] + self.obs_width + self.obs_delta):
+                    if row >= self.center_obs_anchor[1] and row <= (self.center_obs_anchor[1] + self.obs_height):
+                        self.envXCoord.append(col)
+                        self.envYCoord.append(row)
     
 

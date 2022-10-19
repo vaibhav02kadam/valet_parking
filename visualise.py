@@ -11,12 +11,12 @@ class MapEnv:
         self.width = width
         self.height = height
         self.envXCoord, self.envYCoord = [], []
-        self.left_obs_anchor  = [5, 5]
-        self.right_obs_anchor  = [70, 5]
-        self.center_obs_anchor = [40, 50]
-        self.obs_width = 25
-        self.obs_height = 10
-        self.obs_delta = 20
+        self.left_obs_anchor  = [self.width*0.12, self.width*0.05]
+        self.right_obs_anchor  = [self.width*0.65, self.width*0.05]
+        self.center_obs_anchor = [self.width*0.4, self.width*0.5]
+        self.obs_width =  self.width*0.20
+        self.obs_height =  self.width*0.1
+        self.obs_delta =  self.width*0.2
 
     def buildEnv(self):
         
@@ -62,3 +62,31 @@ class MapEnv:
                         self.envYCoord.append(row)
     
 
+
+class Arrow:
+    def __init__(self, x, y, theta, L, c):
+        angle = np.deg2rad(30)
+        d = 0.3 * L
+        w = 1
+
+        x_start = x
+        y_start = y
+        x_end = x + L * np.cos(theta)
+        y_end = y + L * np.sin(theta)
+
+        theta_hat_L = theta + math.pi - angle
+        theta_hat_R = theta + math.pi + angle
+
+        x_hat_start = x_end
+        x_hat_end_L = x_hat_start + d * np.cos(theta_hat_L)
+        x_hat_end_R = x_hat_start + d * np.cos(theta_hat_R)
+
+        y_hat_start = y_end
+        y_hat_end_L = y_hat_start + d * np.sin(theta_hat_L)
+        y_hat_end_R = y_hat_start + d * np.sin(theta_hat_R)
+
+        plt.plot([x_start, x_end], [y_start, y_end], color=c, linewidth=w)
+        plt.plot([x_hat_start, x_hat_end_L],
+                 [y_hat_start, y_hat_end_L], color=c, linewidth=w)
+        plt.plot([x_hat_start, x_hat_end_R],
+                 [y_hat_start, y_hat_end_R], color=c, linewidth=w)

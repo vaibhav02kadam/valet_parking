@@ -12,7 +12,6 @@ ENV_HEIGHT = 101
 def main():
 
     map = MapEnv(ENV_WIDTH, ENV_HEIGHT)
-
     map.buildEnv()
   
     plt.cla()

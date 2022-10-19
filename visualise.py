@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 import math
@@ -73,7 +72,7 @@ class MapEnv:
                         self.envXCoord.append(col)
                         self.envYCoord.append(row)
     
-                #Plotting right obstacle
+                #Plotting center obstacle
                 if col >= self.center_obs_anchor[0] and col <= (self.center_obs_anchor[0] + self.obs_width + self.obs_delta):
                     if row >= self.center_obs_anchor[1] and row <= (self.center_obs_anchor[1] + self.obs_height):
                         self.envXCoord.append(col)

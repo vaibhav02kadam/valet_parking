@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import numpy as np
+import math
+
 import matplotlib.pyplot as plt
 
 from visualise import MapEnv, Arrow
 from vehicles import AckermannCar 
-import math
 
 ENV_WIDTH = 41
 ENV_HEIGHT = 41
@@ -31,7 +32,7 @@ def main():
     vehicle.drawVehicle(start_x, start_y, s_theta, 'green')
     vehicle.drawVehicle(goal_x, goal_y, g_theta, 'red')
 
-    plt.arrow(start_x,start_y,  ARROW_LEN*math.cos(s_theta),  ARROW_LEN*math.sin(s_theta), width=.1)
+    plt.arrow(start_x,start_y,  ARROW_LEN*math.cos(s_theta),  ARROW_LEN*math.sin(s_theta), width=0.1)
 
     plt.plot(map.envXCoord, map.envYCoord, "sk")
     plt.plot(ENV_WIDTH, ENV_HEIGHT, linewidth=1.5, color='r', zorder=0)

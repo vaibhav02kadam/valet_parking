@@ -6,7 +6,8 @@ import math
 import matplotlib.pyplot as plt
 
 from visualise import MapEnv, Arrow
-from vehicles import AckermannCar 
+import vehicles
+import hybrid_astar as hybrid_astar
 
 ENV_WIDTH = 41
 ENV_HEIGHT = 41
@@ -19,28 +20,34 @@ def main():
     map.buildEnv()
 
     if VEHICLE_TYPE=="car":
-        vehicle = AckermannCar()
+        vehicle = vehicles.AckermannCar()
 
-    start_x, start_y, s_theta = 8.0, 35.0, 0.0
-    goal_x, goal_y, g_theta = 18.0, 5.0, 0.0
-  
-    plt.cla()
-    plt.xlim(min(map.envXCoord), max(map.envXCoord)) 
-    plt.ylim(min(map.envYCoord), max(map.envYCoord))
-    vehicle.drawVehicle(20, 25, 45)
+    start_pose = [8.0, 35.0, np.deg2rad(90)]
+    goal_pose = [18.0, 5.0, np.deg2rad(90)]
 
-    vehicle.drawVehicle(start_x, start_y, s_theta, 'green')
-    vehicle.drawVehicle(goal_x, goal_y, g_theta, 'red')
+    map_env = hybrid_astar.calculateEnvParameters(map.envXCoord, map.envYCoord, 4, np.deg2rad(15.0))
 
-    plt.arrow(start_x,start_y,  ARROW_LEN*math.cos(s_theta),  ARROW_LEN*math.sin(s_theta), width=0.1)
+    x, y, yaw = hybrid_astar.hybridAstar(start_pose, goal_pose, map_env, plt)
 
-    plt.plot(map.envXCoord, map.envYCoord, "sk")
-    plt.plot(ENV_WIDTH, ENV_HEIGHT, linewidth=1.5, color='r', zorder=0)
-    plt.axis('equal')
+    for k in range(len(x)):
 
-    plt.title("Valet Parking")
-    plt.pause(0.001)
-    
+        plt.cla()
+        plt.xlim(min(map.envXCoord), max(map.envXCoord)) 
+        plt.ylim(min(map.envYCoord), max(map.envYCoord))
+       
+        vehicles.drawCar(start_pose[0], start_pose[1], start_pose[2], 'green')
+        vehicles.drawCar(goal_pose[0], goal_pose[1], goal_pose[2], 'red')
+
+        vehicles.drawCar(x[k], y[k], yaw[k])
+        plt.arrow(x[k],y[k],  ARROW_LEN*math.cos(yaw[k]),  ARROW_LEN*math.sin(yaw[k]), width=0.1)
+
+        plt.plot(map.envXCoord, map.envYCoord, "sk")
+        plt.plot(ENV_WIDTH, ENV_HEIGHT, linewidth=1.5, color='r', zorder=0)
+        plt.axis('equal')
+
+        plt.title("Valet Parking")
+        plt.pause(0.001)
+        
     plt.show()
 
 if __name__ == '__main__':

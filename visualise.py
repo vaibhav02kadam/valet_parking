@@ -6,6 +6,7 @@ import math
 
 
 
+
 class MapEnv:
     def __init__(self,width, height) -> None:
         self.width = width
@@ -60,7 +61,7 @@ class MapEnv:
                     if row >= self.center_obs_anchor[1] and row <= (self.center_obs_anchor[1] + self.obs_height):
                         self.envXCoord.append(col)
                         self.envYCoord.append(row)
-    
+        
 
 
 class Arrow:

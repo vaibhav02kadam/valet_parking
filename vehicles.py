@@ -14,9 +14,9 @@ class AckermannCar:
         width = 3.0 # meters
 
 
-def drawCar(self, x, y, yaw, color='black'):
-    car = np.array([[-self.axleToBack, -self.axleToBack, self.axleToFront, self.axleToFront, -self.axleToBack],
-                    [self.width / 2, -self.width / 2, -self.width / 2, self.width / 2, self.width / 2]])
+def drawCar(x, y, yaw, color='black'):
+    car = np.array([[-AckermannCar.axleToBack, -AckermannCar.axleToBack, AckermannCar.axleToFront, AckermannCar.axleToFront, -AckermannCar.axleToBack],
+                    [AckermannCar.width / 2, -AckermannCar.width / 2, -AckermannCar.width / 2, AckermannCar.width / 2, AckermannCar.width / 2]])
 
     rotationZ = np.array([[math.cos(yaw), -math.sin(yaw)],
                     [math.sin(yaw), math.cos(yaw)]])

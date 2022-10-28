@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 from visualise import MapEnv, Arrow
 import vehicles
-import hybrid_astar as hybrid_astar
+from hybrid_astar import*
 
 ENV_WIDTH = 41
 ENV_HEIGHT = 41
@@ -22,13 +22,16 @@ def main():
     if VEHICLE_TYPE=="car":
         vehicle = vehicles.AckermannCar()
 
-    start_pose = [8.0, 35.0, np.deg2rad(90)]
-    goal_pose = [18.0, 5.0, np.deg2rad(90)]
+    start_pose = [8.0, 35.0, np.deg2rad(0)]
+    goal_pose = [20.0, 5.0, np.deg2rad(0)]
 
-    map_env = hybrid_astar.calculateEnvParameters(map.envXCoord, map.envYCoord, 4, np.deg2rad(15.0))
 
-    x, y, yaw = hybrid_astar.hybridAstar(start_pose, goal_pose, map_env, plt)
+    map_env = calculateEnvParameters(map.envXCoord, map.envYCoord, 4, np.deg2rad(15.0))
+    print("Map envi", map_env)
 
+    x, y, yaw = hybridAstar(start_pose, goal_pose, map_env, plt)
+    # x = 10
+    # for k in range(x):
     for k in range(len(x)):
 
         plt.cla()

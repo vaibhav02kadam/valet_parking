@@ -341,8 +341,6 @@ def backtrack(start_state, goal_state, closed_set, plt):
     # Goal Node data
     start_state_id = index(start_state)
     current_state_id = goal_state.parent_index
-    print("Current state id",current_state_id)
-    print("Closed state",closed_set )
     current_state = closed_set[current_state_id]
     x=[]
     y=[]
@@ -360,7 +358,6 @@ def backtrack(start_state, goal_state, closed_set, plt):
 
 
 def hybridAstar(start_pose, goal_pose, env_map, plt):
-    print("Im here in hybrid astar")
 
     start_pose_id = [round(start_pose[0] / env_map.cordinate_resolution), \
                   round(start_pose[1] / env_map.cordinate_resolution), \
@@ -370,17 +367,12 @@ def hybridAstar(start_pose, goal_pose, env_map, plt):
                   round(goal_pose[1] / env_map.cordinate_resolution), \
                   round(goal_pose[2]/env_map.theta_resolution)]
 
-    print("Start_pose index", start_pose_id)
-    print("Goal pose index", goal_pose_id)
-
     motion_primitives = getMotionPrimitives()
 
     start_state = State(start_pose_id, [start_pose], 0, 1, 0, tuple(start_pose_id))
     goal_state = State(goal_pose_id, [goal_pose], 0, 1, 0, tuple(goal_pose_id))
-    print("I got start and goal state", start_state, goal_state)
 
     unconstrained_heuristics = getUnconstrainedHeuristic(goal_state, env_map)
-    print("Unconstrained", unconstrained_heuristics)
 
     open_set = {index(start_state):start_state}
     closed_set = {}
@@ -395,7 +387,6 @@ def hybridAstar(start_pose, goal_pose, env_map, plt):
         counter += 1
 
         if not open_set:
-            print("Im here in not open set ")
             return None
         
         current_state_id = cost_priority_queue.popitem()[0]
@@ -413,7 +404,6 @@ def hybridAstar(start_pose, goal_pose, env_map, plt):
             break
 
         if current_state_id == index(goal_state):
-            print("Path Found")
             print(current_state.trajectory_rollout[-1])
             break
 
@@ -444,8 +434,6 @@ def hybridAstar(start_pose, goal_pose, env_map, plt):
                         open_set[simulated_state_id] = simulated_state
                         cost_priority_queue[simulated_state_id] = max(simulated_state.cost , Cost.hybridCost * unconstrained_heuristics[simulated_state.state_id[0]][simulated_state.state_id[1]])
 
-    print("Start node before backtrack", start_state)
     x, y, yaw = backtrack(start_state, goal_state, closed_set, plt)
-    print("x y yaw", x , y, yaw)
 
     return x, y, yaw

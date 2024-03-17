@@ -11,7 +11,9 @@ from heapdict import heapdict
 import CurvesGenerator.reeds_shepp as rs
 from vehicles import AckermannCar 
 
-
+"""
+Class provides defination of state-vertex or node consider following parameters.
+"""
 class State:
     def __init__(self, state_id, trajectory_rollout, steering_angle, traversal_dir, cost, parent_index):
         self.state_id = state_id
@@ -21,12 +23,18 @@ class State:
         self.cost = cost
         self.parent_index = parent_index
 
+"""
+Provides defination for holonomic state used for calculated unconstrained heuristics
+"""
 class unconstraintedState:
     def __init__(self, state_id, cost, parent_id):
         self.state_id = state_id
         self.cost = cost
         self.parent_id = parent_id
 
+"""
+Defines costs considered for pruning states after expansion
+"""
 class Cost:
     reverse = 10
     direction_change = 150
@@ -34,7 +42,9 @@ class Cost:
     steer_angle_change = 5
     hybrid_cost = 50
 
-
+"""
+Defines environment parameters like angle resolution coordinate resolution, obstacles
+"""
 class getEnvParameters:
     def __init__(self, env_xmin, env_ymin, env_xmax,
      env_ymax, cordinate_resolution, theta_resolution, obstacle_kdtree, obs_x, obs_y):
@@ -49,6 +59,9 @@ class getEnvParameters:
         self.obs_y = obs_y
 
 
+"""
+Calculates environment parameters
+"""
 def calculateEnvParameters(obs_x, obs_y, cordinate_resolution, theta_resolution):
     env_xmin = round(min(obs_x) / cordinate_resolution)
     env_ymin = round(min(obs_y) / cordinate_resolution)
@@ -59,6 +72,9 @@ def calculateEnvParameters(obs_x, obs_y, cordinate_resolution, theta_resolution)
 
     return getEnvParameters(env_xmin, env_ymin, env_xmax, env_ymax,cordinate_resolution,  theta_resolution, obstacle_kdtree, obs_x, obs_y)  
 
+"""
+Generates motion set for traversing with successive vertex
+"""
 def getMotionPrimitives():
 
     direction = 1 #Forward direction
@@ -67,12 +83,20 @@ def getMotionPrimitives():
     for primitive in np.arange(AckermannCar.maxSteerAngle, -(AckermannCar.maxSteerAngle/AckermannCar.steerPrecision), -AckermannCar.maxSteerAngle/AckermannCar.steerPrecision):
         motion_primitives.append([primitive, direction])
         motion_primitives.append([primitive, -direction])
+
+    print("Motion Primitives", motion_primitives)
     return motion_primitives
 
+"""
+Get all the states of State vector
+"""
 def index(State):
     # Index is a tuple consisting grid index, used for checking if two nodes are near/same
     return tuple([State.state_id[0], State.state_id[1], State.state_id[2]])
 
+"""
+Build obstalces in environment as required in assignment
+"""
 def buildObstacles(obs_x, obs_y, coordinate_res):
 
     
@@ -92,6 +116,9 @@ def buildObstacles(obs_x, obs_y, coordinate_res):
 
     return obstacles
 
+"""
+Define motion set for unconstrained heuristics 
+"""
 def unconstrainedMotion():
 
     unconstrained_motion_command = [[-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1]]
@@ -105,7 +132,9 @@ def eucledianCost(holonomicMotionCommand):
 def uncontrainedStateId(unconstraintedState):
     return tuple([unconstraintedState.state_id[0], unconstraintedState.state_id[1]])
 
-
+"""
+Checks whether its within environment
+"""
 def is_unconstrained_state_valid(neighbour_state, obstacles, env_map):
 
     # Check if Node is out of map bounds
@@ -122,7 +151,9 @@ def is_unconstrained_state_valid(neighbour_state, obstacles, env_map):
     return True
 
 
-
+"""
+Provides unconstrained heuristics
+"""
 def getUnconstrainedHeuristic(goal_state, env_map ):
 
     state_id = [round(goal_state.trajectory_rollout[-1][0]/env_map.cordinate_resolution), round(goal_state.trajectory_rollout[-1][1]/env_map.cordinate_resolution)]
@@ -175,7 +206,9 @@ def getUnconstrainedHeuristic(goal_state, env_map ):
 
     return unconstrained_cost
 
-
+"""
+Checks collision using KD-tree
+"""
 def collision(trajectory_rollout, map_env):
 
     car_radius = (AckermannCar.axleToFront + AckermannCar.axleToBack)/2 + 1
@@ -199,6 +232,8 @@ def collision(trajectory_rollout, map_env):
 
     return False
 
+"""Check state validaty for environment limits
+"""
 def is_state_valid(trajectory_rollout, state_id, map_env):
 
     # Check if Node is out of map bounds
@@ -211,6 +246,8 @@ def is_state_valid(trajectory_rollout, state_id, map_env):
         return False
     return True
 
+"""Calculate path cost consider direction, reverse, steering change cost
+"""
 def path_cost(current_state, motion_primitive, simulation_length):
 
     # Previos Node Cost
@@ -223,7 +260,7 @@ def path_cost(current_state, motion_primitive, simulation_length):
         cost += simulation_length * Cost.reverse
 
     # Direction change cost
-    if current_state.direction != motion_primitive[1]:
+    if current_state.traversal_dir != motion_primitive[1]:
         cost += Cost.directionChange
 
     # Steering Angle Cost
@@ -234,7 +271,9 @@ def path_cost(current_state, motion_primitive, simulation_length):
 
     return cost
 
-
+"""
+Update state using vehicle kinematics
+"""
 def get_kinematics(current_state, motion_primitive, env_map, simulation_length=4, step = 0.8 ):
 
         # Simulate node using given current Node and Motion Commands
@@ -264,7 +303,8 @@ def get_kinematics(current_state, motion_primitive, env_map, simulation_length=4
 
 
     
-
+"""Calculates cost of Generated reeds_shepp path
+"""
 def reeds_shepp_cost(current_state, path):
 
     # Previos Node Cost
@@ -302,7 +342,8 @@ def reeds_shepp_cost(current_state, path):
     return cost
 
 
-
+"""Generate reeds shepp paths from current state to goal
+"""
 def reeds_shepp_node(current_state, goal_state, env_map):
 
     # Get x, y, yaw of currentNode and goalNode
@@ -314,7 +355,7 @@ def reeds_shepp_node(current_state, goal_state, env_map):
 
     #  Find all possible reeds-shepp paths between current and goal node
     reeds_shepp_paths = rs.calc_all_paths(start_x, start_y, start_yaw, goal_x, goal_y, goal_yaw, radius, 1)
-
+    # directions = reeds_shepp_paths.directions
     # Check if reedsSheppPaths is empty
     if not reeds_shepp_paths:
         return None
@@ -335,7 +376,8 @@ def reeds_shepp_node(current_state, goal_state, env_map):
             
     return None
     
-
+"""Back tracks the generated path to provide state vector to goal
+"""
 def backtrack(start_state, goal_state, closed_set, plt):
 
     # Goal Node data
@@ -352,11 +394,13 @@ def backtrack(start_state, goal_state, closed_set, plt):
         x += a[::-1] 
         y += b[::-1] 
         theta += c[::-1]
+       
         current_state_id = current_state.parent_index
         current_state = closed_set[current_state_id]
     return x[::-1], y[::-1], theta[::-1]
 
-
+"""Runs Hybrid astar
+"""
 def hybridAstar(start_pose, goal_pose, env_map, plt):
 
     start_pose_id = [round(start_pose[0] / env_map.cordinate_resolution), \
@@ -411,6 +455,7 @@ def hybridAstar(start_pose, goal_pose, env_map, plt):
     
           # Get all simulated Nodes from current node
         for i in range(len(motion_primitives)):
+            #Kinematically valid next
             simulated_state = get_kinematics(current_state, motion_primitives[i], env_map)
 
             # Check if path is within map bounds and is collision free
@@ -419,7 +464,8 @@ def hybridAstar(start_pose, goal_pose, env_map, plt):
 
             # Draw Simulated Node
             x,y,z =zip(*simulated_state.trajectory_rollout)
-            plt.plot(x, y, linewidth=0.3, color='g')
+            plt.plot(x, y, linewidth=1, color='g')
+            plt.show()
 
             # Check if simulated node is already in closed set
             simulated_state_id = index(simulated_state)

@@ -8,3 +8,9 @@ Objectives include to park following
 - Ackermann Steering Car
 - Truck Trailer      
    
+
+To the run the valet-parking please use python3 valet_parking.py
+set the specific vehicle you wish to run 
+1. "car"
+2. "diffdrive"
+3. "trucktrailer"
